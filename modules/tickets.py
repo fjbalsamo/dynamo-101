@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Union
 from uuid import uuid4
@@ -11,16 +12,18 @@ class Ticket(MyTable):
     SALE_PK: str = "SALE_ITEM"
     sale_items: List[Dict[str, Any]] = []
 
-    def __init__(self, customer: Customer) -> None:
+    def __init__(self, customer: Union[Customer, None] = None) -> None:
         super().__init__()
-        self.id: str = str(uuid4())
-        self.customer_id: str = customer.id
-        self.ticket_name: str = (
-            f"{customer.lastname} {customer.name} | CUIT: {customer.cuit}"
-        )
-        self.date: str = datetime.now().strftime("%Y-%m-%d")
-        self.products_qty: int = 0
-        self.total_price: float = 0.0
+        if not customer is None:
+            self.id: str = str(uuid4())
+
+            self.customer_id: str = customer.id
+            self.ticket_name: str = (
+                f"{customer.lastname} {customer.name} | CUIT: {customer.cuit}"
+            )
+            self.date: str = datetime.now().strftime("%Y-%m-%d")
+            self.products_qty: int = 0
+            self.total_price: float = 0.0
 
     @classmethod
     def __serialize_sale_item(cls, Item: Dict[str, Any]):
@@ -81,17 +84,18 @@ class Ticket(MyTable):
         self.total_price += product_qty * product.unit_price
 
     def find_ticket_by(self, by: Literal["customer_id", "date"], value: str):
-        return self.query(
+        query_list = self.query(
             PK=self.TKT_PK,
             SK_NAME="SK2" if by == "customer_id" else "SK3",
             SK_VALUE=value,
             serialize=Ticket.__serialize_ticket,
         )
+        print(json.dumps(query_list, indent=2))
 
     def get_ticket_by_id(self, ticket_id: str):
         Item = self.get_item(PK=self.TKT_PK, SK1=ticket_id)
         if Item is None:
-            return None
+            print(json.dumps({"error": f"ticket_id {ticket_id} not found"}, indent=2))
         else:
             details = self.query(
                 PK=self.SALE_PK,
@@ -100,7 +104,7 @@ class Ticket(MyTable):
                 serialize=Ticket.__serialize_sale_item,
             )
             tkt = Ticket.__serialize_ticket(Item=Item)
-            return {**tkt, "details": details}
+            print(json.dumps({**tkt, "details": details}, indent=2))
 
     def save(self):
         tkt_item = {

@@ -52,7 +52,7 @@ def tickets_seeder(
 
 
 # Step 1/2: Create the Table
-create_single_table()
+# create_single_table()
 
 # Step 2/2: Run seedrs to populate the table
 # products_list = products_seeder()
@@ -65,3 +65,6 @@ create_single_table()
 #         "tickets": len(ticket_list),
 #     }
 # )
+
+# Customer().find_customer_by(by="name", value="m")
+Ticket().find_ticket_by(by="date", value="2024")

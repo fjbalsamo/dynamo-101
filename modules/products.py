@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Any, Dict, Literal, List, Union
 from uuid import uuid4
@@ -50,12 +51,20 @@ class Product(MyTable):
         self.add_single_table_item(Item=Item)
 
     def find_products_by(self, by: Literal["name", "kind"], value: str):
-        return self.query(
+        query_list = self.query(
             PK=self.PK,
             SK_NAME="SK2" if by == "name" else "SK3",
             SK_VALUE=value.lower(),
             serialize=Product.__serialize,
         )
+        print(json.dumps(query_list, indent=2))
+
+    def get_product_by_id(self, product_id: str):
+        item = self.get_item(PK=self.PK, SK1=product_id)
+        if item is None:
+            print(json.dumps({"error": f"produc_id: {product_id} not found"}, indent=2))
+        else:
+            print(json.dumps(item, indent=2))
 
     @classmethod
     def seeder(cls):

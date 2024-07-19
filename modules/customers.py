@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Any, Dict, Literal, List
 from uuid import uuid4
@@ -49,28 +50,29 @@ class Customer(MyTable):
         self.add_single_table_item(Item=Item)
 
     def find_customer_by(self, by: Literal["name", "lastname", "cuit"], value: str):
-
+        query_list: List[Dict[str, Any]] = []
         if by == "cuit":
-            return self.query(
+            query_list = self.query(
                 PK=self.PK,
                 SK_NAME="SK1",
                 SK_VALUE=value,
                 serialize=Customer.__serialize,
             )
         elif by == "lastname":
-            return self.query(
+            query_list = self.query(
                 PK=self.PK,
                 SK_NAME="SK2",
                 SK_VALUE=value,
                 serialize=Customer.__serialize,
             )
         else:
-            return self.query(
+            query_list = self.query(
                 PK=self.PK,
                 SK_NAME="SK3",
                 SK_VALUE=value,
                 serialize=Customer.__serialize,
             )
+        print(json.dumps(query_list, indent=2))
 
     @classmethod
     def seeder(cls):

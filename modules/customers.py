@@ -19,6 +19,22 @@ class Customer(MyTable):
         self.phone = Data.get("phone", "N/A")
         self.email = Data.get("email", "@")
 
+    @classmethod
+    def __serialize(cls, Item: Dict[str, Any]):
+        SK1: str = Item.get("SK1", "#")
+        SK2: str = Item.get("SK2", "#")
+        SK3: str = Item.get("SK3", "#")
+        return {
+            "id": SK1.split("#")[1],
+            "cuit": SK1.split("#")[0],
+            "name": SK3.split("#")[0],
+            "lastname": SK2.split("#")[0],
+            "email": Item.get("email", "@"),
+            "phone": Item.get("phone", "N/A"),
+            "created_at": Item.get("created_at"),
+            "updated_at": Item.get("updated_at"),
+        }
+
     def save(self):
         Item = {
             "PK": self.PK,
@@ -31,6 +47,30 @@ class Customer(MyTable):
             "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
         }
         self.add_single_table_item(Item=Item)
+
+    def find_customer_by(self, by: Literal["name", "lastname", "cuit"], value: str):
+
+        if by == "cuit":
+            return self.query(
+                PK=self.PK,
+                SK_NAME="SK1",
+                SK_VALUE=value,
+                serialize=Customer.__serialize,
+            )
+        elif by == "lastname":
+            return self.query(
+                PK=self.PK,
+                SK_NAME="SK2",
+                SK_VALUE=value,
+                serialize=Customer.__serialize,
+            )
+        else:
+            return self.query(
+                PK=self.PK,
+                SK_NAME="SK3",
+                SK_VALUE=value,
+                serialize=Customer.__serialize,
+            )
 
     @classmethod
     def seeder(cls):

@@ -21,6 +21,21 @@ class Product(MyTable):
         self.unit_price: float = Data.get("unit_price", 0.0)
         self.in_promotion: bool = Data.get("in_promotion", False)
 
+    @classmethod
+    def __serialize(cls, Item: Dict[str, Any]):
+        SK1: str = Item.get("SK1", "#")
+        SK2: str = Item.get("SK2", "#")
+        SK3: str = Item.get("SK3", "#")
+        return {
+            "id": SK1,
+            "name": SK2.split("#")[0],
+            "kind": SK3.split("#")[0],
+            "unit_price": float(Item.get("unit_price")),
+            "in_promotion": bool(Item.get("in_promotion")),
+            "created_at": Item.get("created_at"),
+            "updated_at": Item.get("updated_at"),
+        }
+
     def save(self):
         Item = {
             "PK": self.PK,
@@ -33,6 +48,14 @@ class Product(MyTable):
             "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
         }
         self.add_single_table_item(Item=Item)
+
+    def find_products_by(self, by: Literal["name", "kind"], value: str):
+        return self.query(
+            PK=self.PK,
+            SK_NAME="SK2" if by == "name" else "SK3",
+            SK_VALUE=value.lower(),
+            serialize=Product.__serialize,
+        )
 
     @classmethod
     def seeder(cls):

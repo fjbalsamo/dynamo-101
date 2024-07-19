@@ -1,7 +1,9 @@
 from decimal import Decimal
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Literal, Union
 import json
 import boto3
+import boto3.dynamodb
+import boto3.dynamodb.conditions
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
 
 
@@ -67,3 +69,31 @@ class MyTable:
         with self.single_table.batch_writer() as batch_writer:
             for Item in Batch:
                 batch_writer.put_item(Item=self.__sanitize(Item))
+
+    def query(
+        self,
+        PK: str,
+        SK_NAME: Literal["SK1", "SK2", "SK3"],
+        SK_VALUE: str,
+        serialize: Callable[[Dict[str, Any]], Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        IndexName: Union[str, None] = (
+            None if SK_NAME == "SK1" else str(f"{SK_NAME}_GSI")
+        )
+        query_ref = self.single_table.query(
+            IndexName=IndexName,
+            KeyConditionExpression=boto3.dynamodb.conditions.Key("PK").eq(PK)
+            & boto3.dynamodb.conditions.Key(SK_NAME).begins_with(SK_VALUE),
+        )
+        if query_ref.get("Items") is None:
+            return []
+        else:
+            Items = query_ref.get("Items")
+            return list(map(lambda Item: serialize(Item), Items))
+
+    def get_item(self, PK: str, SK1: str):
+        item_ref = self.single_table.get_item(Key={"PK": PK, "SK1": SK1})
+        if item_ref.get("Item") is None:
+            return None
+        else:
+            return item_ref.get("Item")

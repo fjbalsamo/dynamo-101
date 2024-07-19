@@ -32,7 +32,14 @@ create_single_table()
 # Step 2/2: Run seedrs to populate the table
 # products_list = products_seeder()
 # customers_list = customer_seeder()
-# tickets_seeder(products_list=products_list, customers_list=customers_list)
+# ticket_list = tickets_seeder(products_list=products_list, customers_list=customers_list)
+# print(
+#     {
+#         "products": len(products_list),
+#         "customers": len(customers_list),
+#         "tickets": len(ticket_list),
+#     }
+# )
 ```
 
 Step 2: Comment all step 1 and run `python ./app.py`
@@ -47,8 +54,18 @@ Step 2: Comment all step 1 and run `python ./app.py`
 # Step 2/2: Run seedrs to populate the table
 products_list = products_seeder()
 customers_list = customer_seeder()
-tickets_seeder(products_list=products_list, customers_list=customers_list)
+ticket_list = tickets_seeder(products_list=products_list, customers_list=customers_list)
+print(
+    {
+        "products": len(products_list),
+        "customers": len(customers_list),
+        "tickets": len(ticket_list),
+    }
+)
 ```
 
 ## Go Ahead! Take a look at your data 🥰
 Go back to the NoSQL application.
+
+## Homework
+Use everything you learned and generate reports in the `modules/reports.py` file

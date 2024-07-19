@@ -9,6 +9,10 @@ from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
 
 class MyTable:
     MY_SINGLE_TABLE_NAME: str = "MY_SINGLE_TABLE"
+    _CUSTOMER_PK_NAME: str = "CUSTOMER"
+    _PRODUCT_PK_NAME: str = "PRODUCT"
+    _TICKET_PK_NAME: str = "TICKET"
+    _SALE_PK_NAME: str = "SALE_ITEM"
 
     def __init__(self) -> None:
         client: DynamoDBServiceResource = boto3.resource(

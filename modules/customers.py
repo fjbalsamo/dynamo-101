@@ -50,29 +50,32 @@ class Customer(MyTable):
         self.add_single_table_item(Item=Item)
 
     def find_customer_by(self, by: Literal["name", "lastname", "cuit"], value: str):
-        query_list: List[Dict[str, Any]] = []
+        """
+        # Find Customers By
+        @params by:str can be "name", "lastname", "cuit"
+        @params value:str value to search
+        """
+        print(f"# find Customers when {by} begins_with {value}\n")
+        response: List[Dict[str, Any]] = []
         if by == "cuit":
-            query_list = self.query(
-                PK=self.PK,
-                SK_NAME="SK1",
-                SK_VALUE=value,
+            response = self.get_items_when_SK1_begins_with(
+                PK_VALUE=self.PK,
+                SK1_VALUE=value.lower(),
                 serialize=Customer.__serialize,
             )
         elif by == "lastname":
-            query_list = self.query(
-                PK=self.PK,
-                SK_NAME="SK2",
-                SK_VALUE=value,
+            response = self.get_items_when_SK2_begins_with(
+                PK_VALUE=self.PK,
+                SK2_VALUE=value.lower(),
                 serialize=Customer.__serialize,
             )
-        else:
-            query_list = self.query(
-                PK=self.PK,
-                SK_NAME="SK3",
-                SK_VALUE=value,
+        elif by == "name":
+            response = self.get_items_when_SK3_begins_with(
+                PK_VALUE=self.PK,
+                SK3_VALUE=value.lower(),
                 serialize=Customer.__serialize,
             )
-        print(json.dumps(query_list, indent=2))
+        print(json.dumps(response, indent=2))
 
     @classmethod
     def seeder(cls):
@@ -82,91 +85,98 @@ class Customer(MyTable):
                 "lastname": "E.",
                 "cuit": "00-10000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "lucila.e@email.com",
             },
             {
                 "name": "Ricardo",
                 "lastname": "R.",
                 "cuit": "00-20000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "ricardo.r@email.com",
             },
             {
                 "name": "Alberto",
                 "lastname": "H.",
                 "cuit": "00-30000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "alberto.h@email.com",
             },
             {
                 "name": "Guillermo",
                 "lastname": "L.",
                 "cuit": "00-40000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "guilleromo.l@email.com",
             },
             {
                 "name": "Joaquin",
                 "lastname": "S.",
                 "cuit": "00-50000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "joaquin.s@email.com",
             },
             {
                 "name": "Joaquin",
                 "lastname": "M.",
                 "cuit": "00-60000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "joaquin.m@email.com",
             },
             {
                 "name": "Juan Cruz",
                 "lastname": "B.",
                 "cuit": "00-60000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "juanc.b@email.com",
             },
             {
                 "name": "Laura",
-                "lastname": "L.",
+                "lastname": "C.",
                 "cuit": "00-70000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "laura.c@email.com",
             },
             {
                 "name": "Lucas",
                 "lastname": "P.",
                 "cuit": "00-80000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "lucas.p@email.com",
             },
             {
                 "name": "Martin",
                 "lastname": "M.",
                 "cuit": "00-90000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "martin.m@email.com",
             },
             {
                 "name": "Maria Jose",
                 "lastname": "N.",
                 "cuit": "00-11000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "mariaj.n@email.com",
             },
             {
                 "name": "Ramiro",
                 "lastname": "R.",
                 "cuit": "00-12000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "ramiro.r@email.com",
             },
             {
                 "name": "Pablo",
                 "lastname": "D.",
                 "cuit": "00-13000000-00",
                 "phone": "+5490000000000",
-                "email": "@",
+                "email": "pablo.d@email.com",
+            },
+            {
+                "name": "Franco",
+                "lastname": "B.",
+                "cuit": "00-14000000-00",
+                "phone": "+5490000000000",
+                "email": "franco.b@email.com",
             },
         ]
         collector: List[Customer] = []

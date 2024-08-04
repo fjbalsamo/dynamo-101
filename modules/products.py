@@ -51,13 +51,23 @@ class Product(MyTable):
         self.add_single_table_item(Item=Item)
 
     def find_products_by(self, by: Literal["name", "kind"], value: str):
-        query_list = self.query(
-            PK=self.PK,
-            SK_NAME="SK2" if by == "name" else "SK3",
-            SK_VALUE=value.lower(),
-            serialize=Product.__serialize,
-        )
-        print(json.dumps(query_list, indent=2))
+        """
+        # Find Products by
+        @params by:str can by "name" or "kind
+        @params value:str value to search
+        """
+        print(f"# find Products when {by} begins_with {value}\n")
+        response: List[Dict[str, Any]] = []
+        if by == "name":
+            response = self.get_items_when_SK2_begins_with(
+                PK_VALUE=self.PK, SK2_VALUE=value, serialize=Product.__serialize
+            )
+        elif by == "kind":
+            response = self.get_items_when_SK3_begins_with(
+                PK_VALUE=self.PK, SK3_VALUE=value, serialize=Product.__serialize
+            )
+
+        print(json.dumps(response, indent=2))
 
     def get_product_by_id(self, product_id: str):
         item = self.get_item(PK=self.PK, SK1=product_id)

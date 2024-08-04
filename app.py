@@ -66,5 +66,7 @@ def tickets_seeder(
 #     }
 # )
 
-# Customer().find_customer_by(by="name", value="m")
-Ticket().find_ticket_by(by="date", value="2024")
+Customer().find_customer_by(by="name", value="m")
+# Ticket().find_ticket_by(by="customer_id", value="61bcf7a2-28a3-48fd-8852-9ef7d9bff4b2")
+# Ticket().get_ticket_by_id(ticket_id="6a5564d7-ed45-4066-8304-8e3bd9ff663f")
+# Product().find_products_by(by="name", value="j")

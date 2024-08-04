@@ -84,24 +84,32 @@ class Ticket(MyTable):
         self.total_price += product_qty * product.unit_price
 
     def find_ticket_by(self, by: Literal["customer_id", "date"], value: str):
-        query_list = self.query(
-            PK=self.TKT_PK,
-            SK_NAME="SK2" if by == "customer_id" else "SK3",
-            SK_VALUE=value,
-            serialize=Ticket.__serialize_ticket,
-        )
-        print(json.dumps(query_list, indent=2))
+        """
+        # Find tickets by
+        @params by:str can by "customer_id" or "date"
+        @params value:str value to search
+        """
+        print(f"# find Tickets when {by} begins_with {value}\n")
+        response = []
+        if by == "customer_id":
+            response = self.get_items_when_SK2_begins_with(
+                PK_VALUE=self.TKT_PK, SK2_VALUE=value, serialize=self.__serialize_ticket
+            )
+        elif by == "date":
+            response = self.get_items_when_SK3_begins_with(
+                PK_VALUE=self.TKT_PK, SK3_VALUE=value, serialize=self.__serialize_ticket
+            )
+        print(json.dumps(response, indent=2))
 
     def get_ticket_by_id(self, ticket_id: str):
         Item = self.get_item(PK=self.TKT_PK, SK1=ticket_id)
         if Item is None:
             print(json.dumps({"error": f"ticket_id {ticket_id} not found"}, indent=2))
         else:
-            details = self.query(
-                PK=self.SALE_PK,
-                SK_NAME="SK1",
-                SK_VALUE=ticket_id,
-                serialize=Ticket.__serialize_sale_item,
+            details = self.get_items_when_SK1_begins_with(
+                PK_VALUE=self.SALE_PK,
+                SK1_VALUE=ticket_id,
+                serialize=self.__serialize_sale_item,
             )
             tkt = Ticket.__serialize_ticket(Item=Item)
             print(json.dumps({**tkt, "details": details}, indent=2))
